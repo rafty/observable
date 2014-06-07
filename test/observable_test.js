@@ -59,6 +59,13 @@ TestCase("ObservableNotifyObserversTest", {
 		observable.notifyObservers("String", 1, 32);
 
 		assertEquals(["String", 1, 32], actual);
+	},
+	"test should throw for uncallable observer": function () {
+		var observable = new tddjs.util.Observable();
+
+		assertException(function () {
+			observable.addObserver({});
+		}, "TypeError");
 	}
 });
 
