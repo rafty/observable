@@ -1,9 +1,10 @@
 
 (function () {
 	function Observable () {
+		this.observers = [];
 	}
 	function addObserver(observer) {
-		this.observers = [observer];
+		this.observers.push(observer);
 	}
 
 	Observable.prototype.addObserver = addObserver;

@@ -11,11 +11,12 @@ TestCase("Observable.addObserver", {
 
   "test should store function": function () {
     var observable = new tddjs.util.Observable();
-    var observer = function () {};
+    var observers = [function () {}, function () {}];
 
-    observable.addObserver(observer);
+    observable.addObserver(observers[0]);
+    observable.addObserver(observers[1]);
 
-    assertEquals(observer, observable.observers[0]);
+    assertEquals(observers, observable.observers);
   }
 });
 
