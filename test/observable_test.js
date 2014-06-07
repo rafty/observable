@@ -4,6 +4,11 @@ TestCase("Observable.addObserver", {
 	setUp: function() {
 		log("setUp");
 	},
+
+	tearDown: function() {
+		log("tearDown");
+	},
+
   "test should store function": function () {
     var observable = new tddjs.util.Observable();
     var observer = function () {};
