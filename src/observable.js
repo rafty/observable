@@ -13,12 +13,17 @@
 				return true;
 			}
 		}
-
 		return false;
+	}
+	function notifyObservers() {
+		for (var i = 0, l = this.observers.length; i < l; i++) {
+			this.observers[i]();
+		}
 	}
 
 	Observable.prototype.addObserver = addObserver;
 	Observable.prototype.hasObserver = hasObserver;
+	Observable.prototype.notifyObservers = notifyObservers;
 
 	tddjs.namespace("util");
 	tddjs.util.Observable = Observable;
