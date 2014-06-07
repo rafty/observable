@@ -4,6 +4,10 @@
 		this.observers = [];
 	}
 	function addObserver(observer) {
+		if (typeof observer != "function") {
+			throw new TypeError("observer is not function");
+		}
+
 		this.observers.push(observer);
 	}
 	function hasObserver(observer) {
