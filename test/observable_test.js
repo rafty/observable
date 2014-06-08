@@ -66,6 +66,17 @@ TestCase("ObservableNotifyObserversTest", {
 		assertException(function () {
 			observable.addObserver({});
 		}, "TypeError");
+	},
+	"test should notify all even when some fail": function () {
+		var observable = new tddjs.util.Observable();
+		var observer1 = function () { throw new Error("Oops"); };
+		var observer2 = function () {observer2.called = true; };
+
+		observable.addObserver(observer1);
+		observable.addObserver(observer2);
+		observable.notifyObservers();
+
+		assertTrue(observer2.called);
 	}
 });
 
