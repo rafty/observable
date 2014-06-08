@@ -91,6 +91,13 @@ TestCase("ObservableNotifyObserversTest", {
 
 		assertEquals(observer1, calls[0]);
 		assertEquals(observer2, calls[1]);
+	},
+	"test should not fail if no obserbers": function (){
+		var observable = new tddjs.util.Observable();
+
+		assertNoException(function () {
+			observable.notifyObservers();
+		});
 	}
 });
 
