@@ -8,12 +8,14 @@ TestCase("Observable.observe", {
 
   "test should store function": function () {
     var observers = [function () {}, function () {}];
+		var observable = this.observable;
 
-    this.observable.observe(observers[0]);
-    this.observable.observe(observers[1]);
 
-    assertTrue(this.observable.hasObserver(observers[0]));
-    assertTrue(this.observable.hasObserver(observers[1]));
+    observable.observe("event",observers[0]);
+    observable.observe("event",observers[1]);
+
+    assertTrue(observable.hasObserver("event", observers[0]));
+    assertTrue(observable.hasObserver("event", observers[1]));
   }
 
 });
@@ -25,13 +27,17 @@ TestCase("ObservableHasObserverTest", {
 
 	"test should return true when has observe": function() {
 		var observer = function() {};
+		var observable = this.observable;
 
-		this.observable.observe(observer);
 
-		assertTrue(this.observable.hasObserver(observer));
+		observable.observe("event",observer);
+
+		assertTrue(observable.hasObserver("event", observer));
 	},
 	"test shoud return fales when no observers": function () {
-		assertFalse(this.observable.hasObserver(function () {}));
+		var observable = this.observable;
+
+		assertFalse(observable.hasObserver("event", function () {}));
 	}
 });
 
@@ -42,38 +48,42 @@ TestCase("ObservablenotifyTest", {
 	"test should call all observers": function () {
 		var observer1 = function () {observer1.called = true; };
 		var observer2 = function () {observer2.called = true; };
+		var observable = this.observable;
 
-		this.observable.observe(observer1);
-		this.observable.observe(observer2);
-		this.observable.notify();
+
+		observable.observe("event",observer1);
+		observable.observe("event",observer2);
+		observable.notify("event");
 
 		assertTrue(observer1.called);
 		assertTrue(observer2.called);
 	},
 	"test should pass through arguments": function () {
 		var actual;
+		var observable = this.observable;
 
-		this.observable.observe(function () {
+		observable.observe("event",function () {
 			actual = arguments;
 		});
 	
-		this.observable.notify("String", 1, 32);
+		observable.notify("event", "String", 1, 32);
 
 		assertEquals(["String", 1, 32], actual);
 	},
 	"test should throw for uncallable observer": function () {
-
+		var observable = this.observable;
 		assertException(function () {
-			this.observable.observe({});
+			observable.observe("event",{});
 		}, "TypeError");
 	},
 	"test should notify all even when some fail": function () {
 		var observer1 = function () { throw new Error("Oops"); };
 		var observer2 = function () {observer2.called = true; };
+		var observable = this.observable;
 
-		this.observable.observe(observer1);
-		this.observable.observe(observer2);
-		this.observable.notify();
+		observable.observe("event",observer1);
+		observable.observe("event",observer2);
+		observable.notify("event");
 
 		assertTrue(observer2.called);
 	},
@@ -81,23 +91,40 @@ TestCase("ObservablenotifyTest", {
 		var calls = [];
 		var observer1 = function () { calls.push(observer1); };
 		var observer2 = function () { calls.push(observer2); };
+		var observable = this.observable;
 		
-		this.observable.observe(observer1);
-		this.observable.observe(observer2);
+		observable.observe("event",observer1);
+		observable.observe("event",observer2);
 
-		this.observable.notify();
+		observable.notify("event");
 
 		assertEquals(observer1, calls[0]);
 		assertEquals(observer2, calls[1]);
-	}
-/*	,
-	"test should not fail if no obserbers": function (){
+	},
 
+	"test should not fail if no obserbers": function (){
+		var observable = this.observable;
 		assertNoException(function () {
-			this.observable.notify();
+			observable.notify("event");
 		});
+	},
+
+	"test should notify relevant observers only": function () {
+		var calls = [];
+		var observable = this.observable;
+
+		observable.observe("event", function () {
+			calls.push("event");
+		});
+
+		observable.observe("other", function () {
+			calls.push("other");
+		});
+
+		observable.notify("other");
+		assertEquals(["other"], calls);
+
 	}
-*/
 });
 
 function log(msg) {
