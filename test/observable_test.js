@@ -1,104 +1,103 @@
-TestCase("Observable.addObserver", {
+TestCase("Observable.observe", {
 	setUp: function() {
-		log("setUp");
+		this.observable = Object.create(tddjs.util.observable);
 	},
 
 	tearDown: function() {
-		log("tearDown");
 	},
 
   "test should store function": function () {
-    var observable = new tddjs.util.Observable();
     var observers = [function () {}, function () {}];
 
-    observable.addObserver(observers[0]);
-    observable.addObserver(observers[1]);
+    this.observable.observe(observers[0]);
+    this.observable.observe(observers[1]);
 
-    assertTrue(observable.hasObserver(observers[0]));
-    assertTrue(observable.hasObserver(observers[1]));
+    assertTrue(this.observable.hasObserver(observers[0]));
+    assertTrue(this.observable.hasObserver(observers[1]));
   }
 
 });
 
 TestCase("ObservableHasObserverTest", {
-	"test should return true when has observer": function() {
-		var observable = new tddjs.util.Observable();
+	setUp: function() {
+		this.observable = Object.create(tddjs.util.observable);
+	},
+
+	"test should return true when has observe": function() {
 		var observer = function() {};
 
-		observable.addObserver(observer);
+		this.observable.observe(observer);
 
-		assertTrue(observable.hasObserver(observer));
+		assertTrue(this.observable.hasObserver(observer));
 	},
 	"test shoud return fales when no observers": function () {
-		var observable = new tddjs.util.Observable();
-		assertFalse(observable.hasObserver(function () {}));
+		assertFalse(this.observable.hasObserver(function () {}));
 	}
 });
 
-TestCase("ObservableNotifyObserversTest", {
+TestCase("ObservablenotifyTest", {
+	setUp: function() {
+		this.observable = Object.create(tddjs.util.observable);
+	},
 	"test should call all observers": function () {
-		var observable = new tddjs.util.Observable();
 		var observer1 = function () {observer1.called = true; };
 		var observer2 = function () {observer2.called = true; };
 
-		observable.addObserver(observer1);
-		observable.addObserver(observer2);
-		observable.notifyObservers();
+		this.observable.observe(observer1);
+		this.observable.observe(observer2);
+		this.observable.notify();
 
 		assertTrue(observer1.called);
 		assertTrue(observer2.called);
 	},
 	"test should pass through arguments": function () {
-		var observable = new tddjs.util.Observable();
 		var actual;
 
-		observable.addObserver(function () {
+		this.observable.observe(function () {
 			actual = arguments;
 		});
 	
-		observable.notifyObservers("String", 1, 32);
+		this.observable.notify("String", 1, 32);
 
 		assertEquals(["String", 1, 32], actual);
 	},
 	"test should throw for uncallable observer": function () {
-		var observable = new tddjs.util.Observable();
 
 		assertException(function () {
-			observable.addObserver({});
+			this.observable.observe({});
 		}, "TypeError");
 	},
 	"test should notify all even when some fail": function () {
-		var observable = new tddjs.util.Observable();
 		var observer1 = function () { throw new Error("Oops"); };
 		var observer2 = function () {observer2.called = true; };
 
-		observable.addObserver(observer1);
-		observable.addObserver(observer2);
-		observable.notifyObservers();
+		this.observable.observe(observer1);
+		this.observable.observe(observer2);
+		this.observable.notify();
 
 		assertTrue(observer2.called);
 	},
 	"test should call observers in the order they were added": function () {
-		var observable = new tddjs.util.Observable();
 		var calls = [];
 		var observer1 = function () { calls.push(observer1); };
 		var observer2 = function () { calls.push(observer2); };
 		
-		observable.addObserver(observer1);
-		observable.addObserver(observer2);
+		this.observable.observe(observer1);
+		this.observable.observe(observer2);
 
-		observable.notifyObservers();
+		this.observable.notify();
 
 		assertEquals(observer1, calls[0]);
 		assertEquals(observer2, calls[1]);
-	},
+	}
+/*	,
 	"test should not fail if no obserbers": function (){
-		var observable = new tddjs.util.Observable();
 
 		assertNoException(function () {
-			observable.notifyObservers();
+			this.observable.notify();
 		});
 	}
+*/
 });
 
 function log(msg) {

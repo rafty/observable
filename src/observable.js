@@ -1,9 +1,6 @@
 
 (function () {
-	function Observable () {
-		//this.observers = [];
-	}
-	function addObserver(observer) {
+	function observe(observer) {
 		if (!this.observers) {
 			this.observers = [];
 		}
@@ -14,6 +11,7 @@
 
 		this.observers.push(observer);
 	}
+
 	function hasObserver(observer) {
 		if (!this.observers) {
 			return false;
@@ -25,7 +23,8 @@
 		}
 		return false;
 	}
-	function notifyObservers() {
+
+	function notify() {
 		if (!this.observers) {
 			return;
 		}
@@ -36,12 +35,11 @@
 		}
 	}
 
-	Observable.prototype.addObserver = addObserver;
-	Observable.prototype.hasObserver = hasObserver;
-	Observable.prototype.notifyObservers = notifyObservers;
-
-	tddjs.namespace("util");
-	tddjs.util.Observable = Observable;
+	tddjs.namespace("util").observable = {
+		observe: observe,
+		hasObserver: hasObserver,
+		notify: notify
+	};
 
 }());
 
